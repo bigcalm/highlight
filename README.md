@@ -1,18 +1,16 @@
-# Fast, extensible, server-side code highlighting
-[![Coverage Status](https://coveralls.io/repos/github/tempestphp/highlight/badge.svg?branch=main)](https://coveralls.io/github/tempestphp/highlight?branch=main)
+# EXPERIMENTAL! WordPress Plugin version of Tempest Highlight
 
-## Quickstart
+This takes code snippets like:
 
-```php
-composer require tempest/highlight
+```html
+<pre><code class="language-php">
+$a = 5;
+echo ltrim( $example );
+</code></pre>
 ```
 
-Highlight code like this:
+And creates beautifully highlighted HTML with inline CSS.
 
-```php
-$highlighter = new \Tempest\Highlight\Highlighter();
+## Original Project
 
-$code = $highlighter->parse($code, 'php');
-```
-
-Continue reading in the docs: [https://tempestphp.com/docs/highlight/01-getting-started](https://tempestphp.com/docs/highlight/01-getting-started).
+Learn more at: [https://tempestphp.com/docs/highlight/01-getting-started](https://tempestphp.com/docs/highlight/01-getting-started).

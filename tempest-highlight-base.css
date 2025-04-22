@@ -1,0 +1,45 @@
+/*
+	Original file copyright 2009-2015, Jan-Philip Gehrcke (http://gehrcke.de)
+	Changes 🄯 2024-2025, Terence Eden (https://shkspr.mobi/blog)
+	
+	This CSS attempts to create a basic yet accessible style for highlighted code.
+*/
+
+.tempest-highlight {
+	padding: 0;
+	background: #d3d3d3;
+}
+
+.tempest-highlight code {
+	color: #444;
+	margin: 0;
+	padding: 1em;
+	background-color: #fff;
+	line-height: 1.25em;
+	word-wrap: normal;
+	white-space: pre;
+	font-weight: bold;
+	border-radius: 0;
+	display: inline-block;
+	filter: invert( var(--filter-invert) );
+}
+
+.tempest-highlight-language {
+	display: block;
+	color: black;
+	font-weight: bold;
+	border-radius: 0;
+	padding: 0 1em 0 0;
+	user-select: none;
+	pointer-events: none;
+}
+
+.tempest-highlight-language-icon {
+	display: inline;
+	vertical-align: middle;
+	width: 2.5em;
+}
+
+.tempest-highlight-language img {
+	border-radius: 0;
+}
