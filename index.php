@@ -245,6 +245,11 @@ function tempest_highlight_and_generate_css() {
 				$language_logo    = "javascript";
 				$language_display = "JavaScript";
 				break;
+			case "sql":
+				$language         = "sql";
+				$language_logo    = "mysql";
+				$language_display = "SQL";
+				break;
 			case "svg":
 				$language         = "xml";
 				$language_logo    = "svg";
