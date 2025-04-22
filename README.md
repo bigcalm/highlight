@@ -11,6 +11,8 @@ echo ltrim( $example );
 
 And creates beautifully highlighted HTML with inline CSS.
 
+Very early stages.
+
 ## Original Project
 
 Learn more at: [https://tempestphp.com/docs/highlight/01-getting-started](https://tempestphp.com/docs/highlight/01-getting-started).
