@@ -56,9 +56,9 @@ function tempest_highlight_main( $content ) {
 		//	Language names and icons may be displayed differently.
 		[$language, $language_logo, $language_display] = getLanguageProperties( $language );
 
-		//	Get the HTML from within the <code>.
-		//	Perhaps use `textContent`?
-		$originalCode = $code->innerHTML;
+		//	Get the content from within the <code>.
+		//	Use `textContent` to avoid HTML entities being encoded.
+		$originalCode = $code->textContent;
 
 		//	Set the attributes on the parent <pre>.
 		$code->parentNode->setAttribute( "class", "tempest-highlight" );
