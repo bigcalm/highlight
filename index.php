@@ -33,7 +33,6 @@ function tempest_highlight_main( $content ) {
 
 	//	Set up variables
 	global $highlightTheme;
-	// print_r($highlightTheme);die();
 
 	//	Create the highlighter.
 	$highlighter = new Tempest\Highlight\Highlighter( $highlightTheme );
@@ -99,6 +98,21 @@ function getLanguageProperties( $language ) {
 	$language = strtolower( $language );
 	
 	switch( $language ) {
+		case "bash":
+			$language         = "bash";
+			$language_logo    = "bash";
+			$language_display = "Bash";
+			break;
+		case "sh":
+			$language         = "bash";
+			$language_logo    = "bash";
+			$language_display = "Bash";
+			break;
+		case "shell":
+			$language         = "bash";
+			$language_logo    = "bash";
+			$language_display = "Bash";
+			break;
 		case "html":
 			$language         = "html";
 			$language_logo    = "html";
@@ -108,6 +122,11 @@ function getLanguageProperties( $language ) {
 			$language         = "html";
 			$language_logo    = "html";
 			$language_display = "HTML";
+			break;
+		case "py":
+			$language         = "python";
+			$language_logo    = "python";
+			$language_display = "Python 3";
 			break;
 		case "python":
 			$language         = "python";
@@ -138,6 +157,16 @@ function getLanguageProperties( $language ) {
 			$language         = "sql";
 			$language_logo    = "mysql";
 			$language_display = "SQL";
+			break;
+		case "markdown":
+			$language         = "markdown";
+			$language_logo    = "markdown";
+			$language_display = "Markdown";
+			break;
+		case "md":
+			$language         = "markdown";
+			$language_logo    = "markdown";
+			$language_display = "Markdown";
 			break;
 		case "mysql":
 			$language         = "sql";
