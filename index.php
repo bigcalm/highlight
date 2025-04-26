@@ -79,10 +79,10 @@ function tempest_highlight_main( $content ) {
 		
 		if ( null != $language_dom->firstChild ) {
 			//	Import the specific element and its attributes.
-			$element = $dom->importNode($language_dom->firstChild, true); 
+			$element = $dom->importNode( $language_dom->firstChild, true );
 
 			//	Insert it before the <code> element.
-			$code->parentNode->insertBefore($element, $code);
+			$code->parentNode->insertBefore( $element, $code );
 		}
 	}
 
