@@ -58,9 +58,13 @@ final class InlineTheme implements Theme, WebTheme
         };
 
         $style = $this->map[".{$class}"] ?? null;
-
+        
         if (! $style) {
             return "<span class=\"{$class}\">";
+        }
+
+        if ( "hl-comment" == $class ) {
+            return "<span style=\"{$style}\" translate=\"yes\">";
         }
 
         return "<span style=\"{$style}\">";

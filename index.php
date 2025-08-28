@@ -61,6 +61,7 @@ function tempest_highlight_main( $content ) {
 
 		//	Set the attributes on the parent <pre>.
 		$code->parentNode->setAttribute( "class", "tempest-highlight" );
+		$code->parentNode->setAttribute( "translate", "no" );
 		$code->parentNode->setAttribute( "itemscope", "" );
 		$code->parentNode->setAttribute( "itemtype", "https://schema.org/SoftwareSourceCode" );
 
