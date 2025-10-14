@@ -15,6 +15,7 @@ use Tempest\Highlight\Languages\Php\Patterns\CatchTypePattern;
 use Tempest\Highlight\Languages\Php\Patterns\ClassNamePattern;
 use Tempest\Highlight\Languages\Php\Patterns\ClassPropertyPattern;
 use Tempest\Highlight\Languages\Php\Patterns\ClassResolutionPattern;
+use Tempest\Highlight\Languages\Php\Patterns\ClosureDebugPattern;
 use Tempest\Highlight\Languages\Php\Patterns\ConstantNamePattern;
 use Tempest\Highlight\Languages\Php\Patterns\ConstantPropertyPattern;
 use Tempest\Highlight\Languages\Php\Patterns\ConstantTypesPattern;
@@ -26,6 +27,7 @@ use Tempest\Highlight\Languages\Php\Patterns\FunctionCallPattern;
 use Tempest\Highlight\Languages\Php\Patterns\FunctionNamePattern;
 use Tempest\Highlight\Languages\Php\Patterns\GroupedTypePattern;
 use Tempest\Highlight\Languages\Php\Patterns\ImplementsPattern;
+use Tempest\Highlight\Languages\Php\Patterns\InlineNamespacePattern;
 use Tempest\Highlight\Languages\Php\Patterns\InstanceOfPattern;
 use Tempest\Highlight\Languages\Php\Patterns\KeywordPattern;
 use Tempest\Highlight\Languages\Php\Patterns\MultilineSingleDocCommentPattern;
@@ -171,6 +173,7 @@ class PhpLanguage extends BaseLanguage
             new ShortFunctionReferencePattern(),
             new PropertyHookSetPattern(),
             new PropertyHookGetPattern(),
+            new InlineNamespacePattern(),
 
             // COMMENTS
             new MultilineSingleDocCommentPattern(),
@@ -193,6 +196,7 @@ class PhpLanguage extends BaseLanguage
             new EnumBackedTypePattern(),
             new GroupedTypePattern(),
             new PropertyHookSetParameterTypePattern(),
+            new ClosureDebugPattern(),
 
             // PROPERTIES
             new ClassPropertyPattern(),
