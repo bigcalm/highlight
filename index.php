@@ -9,6 +9,7 @@ Author URI: https://edent.tel/
 
 Tempest Highlight - https://github.com/tempestphp/highlight - is a package for server-side, high-performance, and flexible code highlighting.
 ***/
+if ( ! defined( "ABSPATH" ) ) { exit; }
 
 // Entry point of the plugin (after the template renders the HTML output).
 add_action( "the_content", "tempest_highlight_main", 49 );
