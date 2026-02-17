@@ -14,10 +14,20 @@ final readonly class ParseTokens
      */
     public function __invoke(string $content, Language $language): array
     {
+        return $this->parse($content, $language->getPatterns());
+    }
+
+    /**
+     * @param array<int|string, mixed> $patterns
+     * @return Token[]
+     */
+    public function parse(string $content, array $patterns): array
+    {
         $tokens = [];
+        $seen = [];
 
         // Match tokens from patterns
-        foreach ($language->getPatterns() as $key => $pattern) {
+        foreach ($patterns as $key => $pattern) {
             if ($pattern instanceof TokenTypeEnum) {
                 $pattern = new GenericPattern(
                     $key,
@@ -33,34 +43,31 @@ final readonly class ParseTokens
                 continue;
             }
 
+            $tokenType = $pattern->getTokenType();
+            $tokenTypeValue = $tokenType->getValue();
+
             foreach ($match as $item) {
                 $offset = $item[1];
                 $value = $item[0];
 
-                $token = new Token(
+                $hashKey = $offset . ':' . $tokenTypeValue . ':' . $value;
+
+                if (isset($seen[$hashKey])) {
+                    continue;
+                }
+
+                $seen[$hashKey] = true;
+
+                $tokens[] = new Token(
                     offset: $offset,
                     value: $value,
-                    type: $pattern->getTokenType(),
+                    type: $tokenType,
                     pattern: $pattern,
+                    length: strlen((string) $value),
                 );
-
-                if (! $this->tokenAlreadyPresent($tokens, $token)) {
-                    $tokens[] = $token;
-                }
             }
         }
 
         return $tokens;
-    }
-
-    private function tokenAlreadyPresent(array $tokens, Token $token): bool
-    {
-        foreach ($tokens as $tokenToCompare) {
-            if ($tokenToCompare->equals($token)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

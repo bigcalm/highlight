@@ -27,7 +27,7 @@ final class InlineTheme implements Theme, WebTheme
 
         preg_match_all('/(?<selector>[\w,\.\s\-]+){(?<style>(.|\n)*?)}/', $contents, $matches);
 
-        foreach ($matches[0] as $key => $match) {
+        foreach (array_keys($matches[0]) as $key) {
             $selector = trim($matches['selector'][$key]);
             $style = str_replace([PHP_EOL, '    ', "\t"], [' ', '', ''], trim($matches['style'][$key]));
 
@@ -58,13 +58,9 @@ final class InlineTheme implements Theme, WebTheme
         };
 
         $style = $this->map[".{$class}"] ?? null;
-        
+
         if (! $style) {
             return "<span class=\"{$class}\">";
-        }
-
-        if ( "hl-comment" == $class ) {
-            return "<span style=\"{$style}\" translate=\"yes\">";
         }
 
         return "<span style=\"{$style}\">";
