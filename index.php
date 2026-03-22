@@ -73,6 +73,15 @@ function tempest_highlight_main( $content ) {
 		//	Replace the contents of <code> with the highlighted HTML.
 		$code->innerHTML = $highlighter->parse( $originalCode, $language );
 
+		//	Add the copy button.
+		$copy_button = "<button class='copy' title='Copy code' onclick='navigator.clipboard.writeText( this.parentNode.lastChild.textContent );'>⧉</button>";
+		//	Create a new DOM for it.
+		$copy_dom = Dom\HTMLDocument::createFromString( $copy_button, LIBXML_NOERROR | LIBXML_HTML_NOIMPLIED, "UTF-8" );
+		//	Import the specific element and its attributes.
+		$element = $dom->importNode( $copy_dom->firstChild, true );
+		//	Insert it before the <code> element.
+		$code->parentNode->insertBefore( $element, $code );
+
 		//	Add the language header before the code.
 		//	Construct the HTML.
 		$language_html = generateLanguageHTML( $language_logo, $language_display );
@@ -193,11 +202,12 @@ function getLanguageProperties( $language ) {
 	return [$language, $language_logo, $language_display];
 }
 
-function generateLanguageHTML( $language_logo, $language_display ) {
+function generateLanguageHTML( string $language_logo, string $language_display ):string {
+
 	//	Display an icon if one exists.
 	if ( file_exists( plugin_dir_path( __FILE__ ) . "/svg/" . $language_logo . ".svg" ) ) {
 		$language_icon = plugin_dir_url(  __FILE__ ) . "/svg/" . $language_logo . ".svg";
-		$language_html = 
+		$language_html =
 			"<span class=tempest-highlight-language>" .
 				"<img src=\"{$language_icon}\" width=32 height=32 alt class=tempest-highlight-language-icon>".
 				"<span itemprop=programmingLanguage> {$language_display}</span>".
@@ -215,7 +225,7 @@ function generateLanguageHTML( $language_logo, $language_display ) {
 }
 
 //	Enqueue any base CSS
-function enqueueBaseCSS() {
+function enqueueBaseCSS():void {
 
 	//	Prevent the CSS being added multiple times
 	static $already_added = false;
