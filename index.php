@@ -17,16 +17,13 @@ add_action( "the_content", "tempest_highlight_main", 49 );
 //	Load the Tempest Highlight library
 require_once __DIR__ . "/autoload.php";
 
-//	Set up the namespace
-use Tempest\Highlight\Highlighter;
-
 //	Define a theme
 //	Choose from any in `src/Themes/Css/`
 $css   = "light-plus";
 $highlightTheme = new Tempest\Highlight\Themes\InlineTheme( __DIR__ . "/src/Themes/Css/{$css}.css");
 
 //	Main function
-function tempest_highlight_main( $content ) {
+function tempest_highlight_main( string $content ):string {
 	//	Don't change the content on RSS / Atom feeds, nor on lists
 	if ( is_feed() || !is_single() ) {
 		return $content;
@@ -104,7 +101,8 @@ function tempest_highlight_main( $content ) {
 	return $dom->saveHTML();
 }
 
-function getLanguageProperties( $language ) {
+/** @return array<string> */
+function getLanguageProperties( string $language ):array {
 
 	$language = strtolower( $language );
 	
