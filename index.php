@@ -71,7 +71,7 @@ function tempest_highlight_main( string $content ):string {
 		$code->innerHTML = $highlighter->parse( $originalCode, $language );
 
 		//	Add the copy button.
-		$copy_button = "<button class='copy' title='Copy code' onclick='navigator.clipboard.writeText( this.parentNode.lastChild.textContent );'>⧉</button>";
+		$copy_button = "<button class='copy' title='Copy code' onclick='navigator.clipboard.writeText( this.parentNode.getElementsByTagName(\"code\")[0].textContent );'>⧉</button>";
 		//	Create a new DOM for it.
 		$copy_dom = Dom\HTMLDocument::createFromString( $copy_button, LIBXML_NOERROR | LIBXML_HTML_NOIMPLIED, "UTF-8" );
 		//	Import the specific element and its attributes.
@@ -203,8 +203,8 @@ function getLanguageProperties( string $language ):array {
 function generateLanguageHTML( string $language_logo, string $language_display ):string {
 
 	//	Display an icon if one exists.
-	if ( file_exists( plugin_dir_path( __FILE__ ) . "/svg/" . $language_logo . ".svg" ) ) {
-		$language_icon = plugin_dir_url(  __FILE__ ) . "/svg/" . $language_logo . ".svg";
+	if ( file_exists( plugin_dir_path( __FILE__ ) . "svg/" . $language_logo . ".svg" ) ) {
+		$language_icon = plugin_dir_url(  __FILE__ ) . "svg/" . $language_logo . ".svg";
 		$language_html =
 			"<span class=tempest-highlight-language>" .
 				"<img src=\"{$language_icon}\" width=32 height=32 alt class=tempest-highlight-language-icon>".
