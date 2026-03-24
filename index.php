@@ -201,23 +201,18 @@ function getLanguageProperties( string $language ):array {
 }
 
 function generateLanguageHTML( string $language_logo, string $language_display ):string {
-
 	//	Display an icon if one exists.
 	if ( file_exists( plugin_dir_path( __FILE__ ) . "svg/" . $language_logo . ".svg" ) ) {
 		$language_icon = plugin_dir_url(  __FILE__ ) . "svg/" . $language_logo . ".svg";
-		$language_html =
-			"<span class=tempest-highlight-language>" .
-				"<img src=\"{$language_icon}\" width=32 height=32 alt class=tempest-highlight-language-icon>".
-				"<span itemprop=programmingLanguage> {$language_display}</span>".
-			"</span>";
 	} else {
-		//	If this is the null language (_) don't show anything
-		if ( $language_display != "" ){
-			$language_html = "<span class=\"tempest-highlight-language\" itemprop=\"programmingLanguage\"> {$language_display}</span>";
-		} else {
-			$language_html = "";
-		}
+		//	Default just show a placeholder icon.
+		$language_icon = plugin_dir_url(  __FILE__ ) . "svg/notepad.svg";
 	}
+	$language_html =
+		"<span class=tempest-highlight-language>" .
+			"<img src=\"{$language_icon}\" width=32 height=32 alt class=tempest-highlight-language-icon>".
+			"<span itemprop=programmingLanguage> {$language_display}</span>".
+		"</span>";
 
 	return $language_html;
 }
