@@ -4,7 +4,7 @@
 
 .tempest-highlight {
 	padding: 0;
-	background: #d3d3d3;
+	background: #fff;
 }
 
 .tempest-highlight code {
@@ -24,6 +24,7 @@
 .tempest-highlight-language {
 	display: block;
 	color: black;
+	background: #d3d3d3;
 	font-weight: bold;
 	border-radius: 0;
 	padding: 0 1em 0 0;
