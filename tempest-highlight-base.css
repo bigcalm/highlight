@@ -10,9 +10,9 @@
 .tempest-highlight code {
 	color: #444;
 	margin: 0;
-	padding: 1em;
+	padding: 2ex 2ch;
 	background-color: #fff;
-	line-height: 1.25em;
+	line-height: 2.5ex;
 	word-wrap: normal;
 	white-space: pre;
 	font-weight: bold;
@@ -27,7 +27,6 @@
 	background: #d3d3d3;
 	font-weight: bold;
 	border-radius: 0 !important;
-	padding: 0 1em 0 0;
 	user-select: none;
 	pointer-events: none;
 }
@@ -35,7 +34,7 @@
 .tempest-highlight-language-icon {
 	display: inline;
 	vertical-align: middle;
-	width: 2.5em;
+	width: 4ch;
 }
 
 .tempest-highlight-language img {
