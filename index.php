@@ -148,8 +148,17 @@ function highlight_set_inner_html( $dom, $element, string $html ): void {
 	$tmpDoc = new DOMDocument();
 	$tmpDoc->encoding = 'UTF-8';
 	libxml_use_internal_errors( true );
-	$tmpDoc->loadHTML( '<div>' . $html . '</div>', LIBXML_NOERROR );
+	$tmpDoc->loadHTML(
+		'<?xml encoding="UTF-8"><div>' . $html . '</div>',
+		LIBXML_NOERROR
+	);
 	libxml_clear_errors();
+	//	Remove the XML processing instruction that loadHTML adds.
+	foreach ( $tmpDoc->childNodes as $child ) {
+		if ( $child instanceof DOMProcessingInstruction ) {
+			$tmpDoc->removeChild( $child );
+		}
+	}
 	//	Import the specific elements and their attributes.
 	$container = $tmpDoc->documentElement->getElementsByTagName( 'div' )->item( 0 );
 	if ( $container ) {
@@ -174,8 +183,17 @@ function highlight_import_html( $dom, string $html ) {
 	$tmpDoc = new DOMDocument();
 	$tmpDoc->encoding = 'UTF-8';
 	libxml_use_internal_errors( true );
-	$tmpDoc->loadHTML( '<div>' . $html . '</div>', LIBXML_NOERROR );
+	$tmpDoc->loadHTML(
+		'<?xml encoding="UTF-8"><div>' . $html . '</div>',
+		LIBXML_NOERROR
+	);
 	libxml_clear_errors();
+	//	Remove the XML processing instruction that loadHTML adds.
+	foreach ( $tmpDoc->childNodes as $child ) {
+		if ( $child instanceof DOMProcessingInstruction ) {
+			$tmpDoc->removeChild( $child );
+		}
+	}
 	//	Import the specific element and its attributes.
 	$div = $tmpDoc->documentElement->getElementsByTagName( 'div' )->item( 0 );
 	return $div && $div->firstChild ? $dom->importNode( $div->firstChild, true ) : null;
