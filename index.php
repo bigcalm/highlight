@@ -34,19 +34,19 @@ function tempest_highlight_main( string $content ):string {
 
 	//	Create the highlighter.
 	$highlighter = new Tempest\Highlight\Highlighter( $highlightTheme );
-	//	Load the content into PHP 8.4's HTML DOM.
-	$dom = Dom\HTMLDocument::createFromString( $content, LIBXML_NOERROR | LIBXML_HTML_NOIMPLIED, "UTF-8" );
-	
+	//	Load the content into the appropriate DOM (PHP 8.4's HTML DOM or legacy DOMDocument).
+	$dom = highlight_create_dom( $content );
+
 	//	Select the code snippets.
 	//	`<pre><code class="language-*">`
-	$codeSnippets = $dom->querySelectorAll( "pre>code[class^=language-]" );
+	$codeSnippets = highlight_query_code_snippets( $dom );
 
 	//	Iterate through each snippet.
 	foreach ( $codeSnippets as $code ) {
 
 		//	What language is this written in?
-		$originalClass = $code->className;
-		
+		$originalClass = highlight_get_class( $code );
+
 		//	Transform `language-whatever` into `whatever`.
 		$language = explode("-", $originalClass)[1];
 
@@ -68,29 +68,20 @@ function tempest_highlight_main( string $content ):string {
 		$code->setAttribute( "itemprop", "text" );
 
 		//	Replace the contents of <code> with the highlighted HTML.
-		$code->innerHTML = $highlighter->parse( $originalCode, $language );
+		highlight_set_inner_html( $dom, $code, $highlighter->parse( $originalCode, $language ) );
 
 		//	Add the copy button.
 		$copy_button = "<button class='copy' title='Copy code' onclick='navigator.clipboard.writeText( this.parentNode.getElementsByTagName(\"code\")[0].textContent );'>⧉</button>";
-		//	Create a new DOM for it.
-		$copy_dom = Dom\HTMLDocument::createFromString( $copy_button, LIBXML_NOERROR | LIBXML_HTML_NOIMPLIED, "UTF-8" );
-		//	Import the specific element and its attributes.
-		$element = $dom->importNode( $copy_dom->firstChild, true );
 		//	Insert it before the <code> element.
-		$code->parentNode->insertBefore( $element, $code );
+		$code->parentNode->insertBefore( highlight_import_html( $dom, $copy_button ), $code );
 
 		//	Add the language header before the code.
 		//	Construct the HTML.
 		$language_html = generateLanguageHTML( $language_logo, $language_display );
-		//	Create a new DOM for it.
-		$language_dom = Dom\HTMLDocument::createFromString( $language_html, LIBXML_NOERROR | LIBXML_HTML_NOIMPLIED, "UTF-8" );
-		
-		if ( null != $language_dom->firstChild ) {
-			//	Import the specific element and its attributes.
-			$element = $dom->importNode( $language_dom->firstChild, true );
-
+		$header = highlight_import_html( $dom, $language_html );
+		if ( null != $header ) {
 			//	Insert it before the <code> element.
-			$code->parentNode->insertBefore( $element, $code );
+			$code->parentNode->insertBefore( $header, $code );
 		}
 	}
 
@@ -98,7 +89,105 @@ function tempest_highlight_main( string $content ):string {
 	enqueueBaseCSS();
 
 	//	Return the altered HTML
-	return $dom->saveHTML();
+	return highlight_save_html( $dom );
+}
+
+//	Creates a new DOM from HTML content, using PHP 8.4's Dom\HTMLDocument when available
+//	and falling back to the legacy DOMDocument for PHP < 8.4.
+function highlight_create_dom( string $content ) {
+	if ( PHP_VERSION_ID >= 80400 ) {
+		return Dom\HTMLDocument::createFromString( $content, LIBXML_NOERROR | LIBXML_HTML_NOIMPLIED, "UTF-8" );
+	}
+
+	$dom = new DOMDocument();
+	$dom->encoding = 'UTF-8';
+	libxml_use_internal_errors( true );
+	$dom->loadHTML( $content, LIBXML_NOERROR | LIBXML_HTML_NOIMPLIED );
+	libxml_clear_errors();
+	return $dom;
+}
+
+//	Selects <pre><code class="language-*"> snippets using the appropriate query API
+//	for the current PHP version.
+function highlight_query_code_snippets( $dom ) {
+	if ( PHP_VERSION_ID >= 80400 ) {
+		return $dom->querySelectorAll( "pre>code[class^=language-]" );
+	}
+
+	$xpath = new DOMXPath( $dom );
+	return $xpath->query( "//pre/code[starts-with(@class, 'language-')]" );
+}
+
+//	Gets the class attribute of an element using the API available in the current PHP version.
+function highlight_get_class( $element ): string {
+	if ( PHP_VERSION_ID >= 80400 ) {
+		return $element->className;
+	}
+
+	return $element->getAttribute( 'class' );
+}
+
+//	Replaces the inner HTML of a DOM element.
+//	On PHP 8.4+, uses the innerHTML property directly.
+//	On older PHP, creates a temporary DOMDocument to parse the HTML,
+//	then imports each child node into the main document.
+function highlight_set_inner_html( $dom, $element, string $html ): void {
+	if ( PHP_VERSION_ID >= 80400 ) {
+		$element->innerHTML = $html;
+		return;
+	}
+
+	//	Remove existing children from the element.
+	while ( $element->firstChild ) {
+		$element->removeChild( $element->firstChild );
+	}
+	if ( '' === trim( $html ) ) {
+		return;
+	}
+	//	Create a new DOM for it.
+	$tmpDoc = new DOMDocument();
+	$tmpDoc->encoding = 'UTF-8';
+	libxml_use_internal_errors( true );
+	$tmpDoc->loadHTML( '<div>' . $html . '</div>', LIBXML_NOERROR );
+	libxml_clear_errors();
+	//	Import the specific elements and their attributes.
+	$container = $tmpDoc->documentElement->getElementsByTagName( 'div' )->item( 0 );
+	if ( $container ) {
+		foreach ( $container->childNodes as $child ) {
+			$element->appendChild( $dom->importNode( $child, true ) );
+		}
+	}
+}
+
+//	Parses an HTML string and imports the resulting node into the main DOM.
+//	On PHP 8.4+, uses Dom\HTMLDocument::createFromString.
+//	On older PHP, creates a temporary DOMDocument to parse the HTML fragment,
+//	then imports the first child into the main document.
+function highlight_import_html( $dom, string $html ) {
+	if ( PHP_VERSION_ID >= 80400 ) {
+		//	Create a new DOM for it, then import the specific element and its attributes.
+		$tmp = Dom\HTMLDocument::createFromString( $html, LIBXML_NOERROR | LIBXML_HTML_NOIMPLIED, "UTF-8" );
+		return $tmp->firstChild ? $dom->importNode( $tmp->firstChild, true ) : null;
+	}
+
+	//	Create a new DOM for it.
+	$tmpDoc = new DOMDocument();
+	$tmpDoc->encoding = 'UTF-8';
+	libxml_use_internal_errors( true );
+	$tmpDoc->loadHTML( '<div>' . $html . '</div>', LIBXML_NOERROR );
+	libxml_clear_errors();
+	//	Import the specific element and its attributes.
+	$div = $tmpDoc->documentElement->getElementsByTagName( 'div' )->item( 0 );
+	return $div && $div->firstChild ? $dom->importNode( $div->firstChild, true ) : null;
+}
+
+//	Saves the DOM back to HTML, stripping the DOCTYPE that the legacy DOMDocument adds.
+function highlight_save_html( $dom ): string {
+	if ( PHP_VERSION_ID >= 80400 ) {
+		return $dom->saveHTML();
+	}
+
+	return preg_replace( '/^<!DOCTYPE[^>]*>\s*/i', '', $dom->saveHTML() );
 }
 
 /** @return array<string> */

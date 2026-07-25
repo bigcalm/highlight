@@ -276,6 +276,6 @@ final class Highlighter
         $class = $injection::class;
 
         return $this->afterInjections[$class] ??=
-            new ReflectionClass($class)->getAttributes(After::class) !== [];
+            (new ReflectionClass($class))->getAttributes(After::class) !== [];
     }
 }
