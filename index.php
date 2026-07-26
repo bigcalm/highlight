@@ -47,8 +47,17 @@ function tempest_highlight_main( string $content ):string {
 		//	What language is this written in?
 		$originalClass = highlight_get_class( $code );
 
-		//	Transform `language-whatever` into `whatever`.
-		$language = explode("-", $originalClass)[1];
+		//	Find the class that starts with `language-` and extract the language name.
+		$language = '';
+		foreach ( explode( ' ', $originalClass ) as $c ) {
+			if ( str_starts_with( $c, 'language-' ) ) {
+				$language = substr( $c, 9 );
+				break;
+			}
+		}
+		if ( $language === '' ) {
+			continue;
+		}
 
 		//	Language names and icons may be displayed differently.
 		[$language, $language_logo, $language_display] = getLanguageProperties( $language );
@@ -111,11 +120,11 @@ function highlight_create_dom( string $content ) {
 //	for the current PHP version.
 function highlight_query_code_snippets( $dom ) {
 	if ( PHP_VERSION_ID >= 80400 ) {
-		return $dom->querySelectorAll( "pre>code[class^=language-]" );
+		return $dom->querySelectorAll( "pre>code[class*=\"language-\"]" );
 	}
 
 	$xpath = new DOMXPath( $dom );
-	return $xpath->query( "//pre/code[starts-with(@class, 'language-')]" );
+	return $xpath->query( "//pre/code[contains(concat(' ', @class, ' '), ' language-')]" );
 }
 
 //	Gets the class attribute of an element using the API available in the current PHP version.
